@@ -1,0 +1,24 @@
+{
+  "name": "file-sizes",
+  "version": "0.1.0",
+  "description": "A simple utility for getting the min/gzip/brotli size of files",
+  "type": "module",
+  "module": "index.js",
+  "bin": {
+    "file-sizes": "./bin/index.js"
+  },
+  "license": "MIT",
+  "author": "Nick Williams",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WickyNilliams/file-sizes"
+  },
+  "scripts": {
+    "postversion": "git push origin main --tags && npm publish"
+  },
+  "dependencies": {
+    "console-table-printer": "^2.12.0",
+    "glob": "^10.4.1",
+    "terser": "^5.31.0"
+  }
+}
