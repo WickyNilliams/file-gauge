@@ -4,6 +4,7 @@ import fs from "node:fs";
 import zlib from "node:zlib";
 import { minify_sync } from "terser";
 import { globSync } from "glob";
+import { Table } from "console-table-printer";
 
 /**
  * @param {string} code
@@ -64,10 +65,48 @@ function getSize(path, options) {
 }
 
 /**
+ * @param {number} size
+ * @returns {string}
+ */
+const toKB = (size) => `${(size / 1000).toFixed(2)}KB`;
+
+const colorMap = {
+  danger: "red",
+  warn: "yellow",
+  ok: "green",
+};
+
+/**
+ *
+ * @param {Result[]} results
+ */
+export function print(results) {
+  if (results.length === 0) {
+    return console.log("No matching files");
+  }
+
+  const table = new Table();
+
+  for (const result of results) {
+    table.addRow(
+      {
+        File: result.path,
+        Raw: toKB(result.raw),
+        GZip: toKB(result.gzip),
+        Brotli: toKB(result.brotli),
+      },
+      { color: colorMap[result.status] }
+    );
+  }
+
+  table.printTable();
+}
+
+/**
  * @param {Options} options
  * @returns {Result[]}
  */
-export default function sizes({ glob, minify, limit = Infinity }) {
+export function gauge({ glob, minify, limit = Infinity }) {
   const options = {
     minify,
     limit: {
