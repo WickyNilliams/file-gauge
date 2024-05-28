@@ -25,7 +25,7 @@ function gzipSize(code) {
 /**
  * @typedef {"ok" | "danger" | "warn"} Status
  * @typedef {{ path: string, status: Status, raw: number, gzip: number, brotli: number}} Result
- * @typedef {{ glob: string, limit?: number, minify: boolean }} Options
+ * @typedef {{ glob: string, ignore?: string, limit?: number, minify: boolean }} Options
  **/
 
 /**
@@ -106,7 +106,7 @@ export function print(results) {
  * @param {Options} options
  * @returns {Result[]}
  */
-export function gauge({ glob, minify, limit = Infinity }) {
+export function gauge({ glob, ignore, minify, limit = Infinity }) {
   const options = {
     minify,
     limit: {
@@ -115,5 +115,5 @@ export function gauge({ glob, minify, limit = Infinity }) {
     },
   };
 
-  return globSync(glob).map((path) => getSize(path, options));
+  return globSync(glob, { ignore }).map((path) => getSize(path, options));
 }

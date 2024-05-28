@@ -17,7 +17,8 @@ npm install file-gauge
 import { gauge, print } from "file-gauge";
 
 const results = gauge({
-  glob: "dist/**/*.js",
+  glob: "**/*.js",
+  ignore: "node_modules/**", // ignore node_modules
   minify: true, // whether to minify with terser
   limit: 5, // limit in kilobytes
 });
@@ -28,7 +29,7 @@ print(results);
 ## CLI
 
 ```bash
-file-gauge "dist/**/*.js" --minify --limit=5
+file-gauge "**/*.js" --ignore="node_modules/**" --minify --limit=5
 ```
 
 Example output:

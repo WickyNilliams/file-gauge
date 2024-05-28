@@ -18,6 +18,10 @@ const {
       type: "string",
       short: "l",
     },
+    ignore: {
+      type: "string",
+      short: "i",
+    },
   },
 });
 
@@ -31,5 +35,6 @@ print(
     glob,
     limit: values.limit ? parseFloat(values.limit) : Infinity,
     minify: values.minify ?? false,
+    ignore: values.ignore,
   })
 );
