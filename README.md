@@ -14,13 +14,15 @@ npm install file-gauge
 > Minification is only supported for JavaScript files
 
 ```javascript
-const { gauge } = require("file-gauge");
+import { gauge, print } from "file-gauge";
 
 const results = gauge({
   glob: "dist/**/*.js",
   minify: true, // whether to minify with terser
   limit: 5, // limit in kilobytes
 });
+
+print(results);
 ```
 
 ## CLI
