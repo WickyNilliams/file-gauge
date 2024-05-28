@@ -1,11 +1,11 @@
-# `file-sizes`
+# `file-gauge`
 
 A simple utility to get the sizes (gzip, brotli, minified) of files. It offers a CLI and a programmatic API.
 
 ## Installation
 
 ```bash
-npm install file-sizes
+npm install file-gauge
 ```
 
 ## API
@@ -14,9 +14,9 @@ npm install file-sizes
 > Minification is only supported for JavaScript files
 
 ```javascript
-const fileSizes = require("file-sizes");
+const gauge = require("file-gauge");
 
-const results = fileSizes({
+const results = gauge({
   glob: "dist/**/*.js",
   minify: true, // whether to minify with terser
   limit: 5, // limit in kilobytes
@@ -26,7 +26,7 @@ const results = fileSizes({
 ## CLI
 
 ```bash
-file-sizes "dist/**/*.js" --minify --limit=5
+file-gauge "dist/**/*.js" --minify --limit=5
 ```
 
 ## License
