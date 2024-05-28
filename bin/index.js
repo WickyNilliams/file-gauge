@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // @ts-check
 import sizes from "../index.js";
 import { parseArgs } from "node:util";
