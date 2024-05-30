@@ -1,6 +1,6 @@
 {
   "name": "file-gauge",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A simple utility for getting the min/gzip/brotli size of files",
   "type": "module",
   "module": "index.js",
