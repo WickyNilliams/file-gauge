@@ -71,7 +71,6 @@ function getSize(path, options) {
 const colorMap = {
   danger: "red",
   warn: "yellow",
-  ok: "green",
 };
 
 /**
