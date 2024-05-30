@@ -1,26 +1,30 @@
 // @ts-check
 
 import fs from "node:fs";
-import zlib from "node:zlib";
+import { gzipSync, brotliCompressSync } from "node:zlib";
 import { minify_sync } from "terser";
 import { globSync } from "glob";
 import { Table } from "console-table-printer";
 
+const KB = 1024;
+
 /**
- * @param {string} code
- * @returns
+ * @param {number} size
+ * @returns {string}
  */
-function brotliSize(code) {
-  return zlib.brotliCompressSync(code).byteLength;
-}
+const toKB = (size) => `${(size / KB).toFixed(2)}KB`;
 
 /**
  * @param {string} code
- * @returns
+ * @returns {number}
  */
-function gzipSize(code) {
-  return zlib.gzipSync(code).byteLength;
-}
+const brotliSize = (code) => brotliCompressSync(code).byteLength;
+
+/**
+ * @param {string} code
+ * @returns {number}
+ */
+const gzipSize = (code) => gzipSync(code).byteLength;
 
 /**
  * @typedef {"ok" | "danger" | "warn"} Status
@@ -64,12 +68,6 @@ function getSize(path, options) {
   };
 }
 
-/**
- * @param {number} size
- * @returns {string}
- */
-const toKB = (size) => `${(size / 1000).toFixed(2)}KB`;
-
 const colorMap = {
   danger: "red",
   warn: "yellow",
@@ -110,8 +108,8 @@ export function gauge({ glob, ignore, minify, limit = Infinity }) {
   const options = {
     minify,
     limit: {
-      danger: limit * 1000,
-      warning: limit * 1000 * 0.9,
+      danger: limit * KB,
+      warning: limit * KB * 0.9,
     },
   };
 
