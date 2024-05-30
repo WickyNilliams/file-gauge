@@ -7,6 +7,21 @@ import { globSync } from "glob";
 import { Table } from "console-table-printer";
 
 const KB = 1024;
+const byteFormats = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+/**
+ * @param {number} bytes
+ * @param {number} decimals
+ * @returns {string}
+ */
+const formatBytes = (bytes, decimals = 2) => {
+  if (bytes === 0) return '0 Bytes'
+  if (decimals < 0) decimals = 0
+
+  const i = Math.floor(Math.log(bytes) / Math.log(KB))
+
+  return `${parseFloat((bytes / Math.pow(KB, i)).toFixed(decimals))} ${byteFormats[i]}`
+}
 
 /**
  * @param {number} size
@@ -88,9 +103,9 @@ export function print(results) {
     table.addRow(
       {
         File: result.path,
-        Raw: toKB(result.raw),
-        GZip: toKB(result.gzip),
-        Brotli: toKB(result.brotli),
+        Raw: formatBytes(result.raw),
+        GZip: formatBytes(result.gzip),
+        Brotli: formatBytes(result.brotli),
       },
       { color: colorMap[result.status] }
     );
