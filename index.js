@@ -6,7 +6,14 @@ import { minify_sync } from "terser";
 import { globSync } from "glob";
 import { Table } from "console-table-printer";
 
-const KB = 1024;
+const formatsInBytes = {
+  KB: 1024,
+  MB: 1048576,
+  GB: 1073741824,
+  TB: 1099511627776,
+  PB: 1125899906842580
+}
+
 const byteFormats = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
 /**
@@ -18,16 +25,17 @@ const formatBytes = (bytes, decimals = 2) => {
   if (bytes === 0) return '0 Bytes'
   if (decimals < 0) decimals = 0
 
-  const i = Math.floor(Math.log(bytes) / Math.log(KB))
+  const i = Math.floor(Math.log(bytes) / Math.log(formatsInBytes.KB))
 
-  return `${parseFloat((bytes / Math.pow(KB, i)).toFixed(decimals))} ${byteFormats[i]}`
+  return `${parseFloat((bytes / Math.pow(formatsInBytes.KB, i)).toFixed(decimals))} ${byteFormats[i]}`
 }
 
 /**
- * @param {number} size
+ * @param {number} bytes
+ * @param {Format} format
  * @returns {string}
  */
-const toKB = (size) => `${(size / KB).toFixed(2)}KB`;
+const toWantedFormat = (bytes, format = 'auto', decimals = 2) => format === 'auto' ? formatBytes(bytes, decimals) : `${(bytes / formatsInBytes[format]).toFixed(decimals)}${format}`;
 
 /**
  * @param {string} code
@@ -43,6 +51,8 @@ const gzipSize = (code) => gzipSync(code).byteLength;
 
 /**
  * @typedef {"ok" | "danger" | "warn"} Status
+ * @typedef {"auto" | "Bytes" | "KB" | "MB" | "GB" | "TB" | "PB" | undefined} Format
+ * @typedef {{ format?: Format, decimals: number }} PrintOptions
  * @typedef {{ path: string, status: Status, raw: number, gzip: number, brotli: number}} Result
  * @typedef {{ glob: string, ignore?: string, limit?: number, minify: boolean }} Options
  **/
@@ -91,21 +101,23 @@ const colorMap = {
 /**
  *
  * @param {Result[]} results
+ * @param {PrintOptions} options
  */
-export function print(results) {
+export function print(results, options = { format: 'auto', decimals: 2}) {
   if (results.length === 0) {
     return console.log("No matching files");
   }
 
+  const {format, decimals} = options
   const table = new Table();
 
   for (const result of results) {
     table.addRow(
       {
         File: result.path,
-        Raw: formatBytes(result.raw),
-        GZip: formatBytes(result.gzip),
-        Brotli: formatBytes(result.brotli),
+        Raw: toWantedFormat(result.raw, format, decimals),
+        GZip: toWantedFormat(result.gzip, format, decimals),
+        Brotli: toWantedFormat(result.brotli, format, decimals),
       },
       { color: colorMap[result.status] }
     );
@@ -122,8 +134,8 @@ export function gauge({ glob, ignore, minify, limit = Infinity }) {
   const options = {
     minify,
     limit: {
-      danger: limit * KB,
-      warning: limit * KB * 0.9,
+      danger: limit * formatsInBytes.KB,
+      warning: limit * formatsInBytes.KB * 0.9,
     },
   };
 
