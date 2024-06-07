@@ -14,7 +14,7 @@ const formatsInBytes = {
   PB: 1125899906842580
 }
 
-const byteFormats = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+const byteFormats = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
 
 /**
  * @param {number} bytes
@@ -22,12 +22,12 @@ const byteFormats = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
  * @returns {string}
  */
 const formatBytes = (bytes, decimals = 2) => {
-  if (bytes === 0) return '0 Bytes'
+  if (bytes === 0) return `0${byteFormats[0]}`
   if (decimals < 0) decimals = 0
 
   const i = Math.floor(Math.log(bytes) / Math.log(formatsInBytes.KB))
 
-  return `${parseFloat((bytes / Math.pow(formatsInBytes.KB, i)).toFixed(decimals))} ${byteFormats[i]}`
+  return `${parseFloat((bytes / Math.pow(formatsInBytes.KB, i)).toFixed(decimals))}${byteFormats[i]}`
 }
 
 /**
@@ -51,7 +51,7 @@ const gzipSize = (code) => gzipSync(code).byteLength;
 
 /**
  * @typedef {"ok" | "danger" | "warn"} Status
- * @typedef {"auto" | "Bytes" | "KB" | "MB" | "GB" | "TB" | "PB" | undefined} Format
+ * @typedef {"auto" | "B" | "KB" | "MB" | "GB" | "TB" | "PB" | undefined} Format
  * @typedef {{ format?: Format, decimals: number }} PrintOptions
  * @typedef {{ path: string, status: Status, raw: number, gzip: number, brotli: number}} Result
  * @typedef {{ glob: string, ignore?: string, limit?: number, minify: boolean }} Options
